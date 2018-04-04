@@ -1,8 +1,9 @@
-import "dart:io";
 import "package:flutter/material.dart";
+import "project_list_page.dart";
 
 class LoginPage extends StatefulWidget {
-  
+  static String tag = 'login-page';
+
   @override
     State<StatefulWidget> createState() => new _LoginPageState();
 }
@@ -48,8 +49,7 @@ class _LoginPageState extends State<LoginPage> {
           minWidth: 200.0,
           height: 42.0,
           onPressed: () {
-            
-            // Navigator.of(context).pushNamed(HomePage.tag);
+            Navigator.of(context).pushNamed(ProjectListPage.tag);
           },
           color: Colors.lightBlueAccent,
           child: new Text('Log In', style: new TextStyle(color: Colors.white)),
