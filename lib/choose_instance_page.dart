@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'utils/network_util.dart';
+import 'rest_urls.dart';
 import 'login_page.dart';
+import 'dart:async';
 
 class ChooseInstancePage extends StatefulWidget {
   static String tag = 'choose-instance-page';
@@ -11,6 +14,8 @@ class ChooseInstancePage extends StatefulWidget {
 class _ChooseInstancePageState extends State<ChooseInstancePage> {
   @override
   Widget build(BuildContext context) {
+
+    final TextEditingController _controller = new TextEditingController();
     
     final text = new Center(
       child: new Text('Enter YouTrack Url',
@@ -21,6 +26,7 @@ class _ChooseInstancePageState extends State<ChooseInstancePage> {
     final url = new TextFormField(
       keyboardType: TextInputType.url,
       autofocus: false,
+      controller: _controller,
       decoration: new InputDecoration(
         hintText: 'youtrack.example.com',
         contentPadding: new EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -40,7 +46,13 @@ class _ChooseInstancePageState extends State<ChooseInstancePage> {
           color: Colors.lightBlueAccent,
           child: new Text('Next', style: new TextStyle(color: Colors.white),),
           onPressed: () {
-            Navigator.of(context).pushNamed(LoginPage.tag);
+            NetworkUtil _networkUtil = new NetworkUtil();
+            final serviceCredentialsUrl = _controller.text + URL_GET_SERVICE_CREDENTIALS;
+            // TODO: validate user input (currently expeted without final '/')
+            print(serviceCredentialsUrl);
+            print(_networkUtil.get(serviceCredentialsUrl));
+
+            // Navigator.of(context).pushNamed(LoginPage.tag);
           }
         ),
       ),

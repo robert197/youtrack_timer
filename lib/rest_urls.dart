@@ -1,0 +1,1 @@
+const String URL_GET_SERVICE_CREDENTIALS = '/api/config?fields=ring(url,serviceId),mobile(serviceSecret,serviceId)';
