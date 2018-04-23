@@ -17,10 +17,12 @@ class NetworkUtil {
       final int statusCode = response.statusCode;
 
       if (statusCode < 200 || statusCode > 400 || json == null) {
-        throw new Exception('Network error');
+        throw new Exception();
       }
 
       return _decoder.convert(response.body);
+    }).catchError((error){
+      return error;
     });
   }
 

@@ -3,41 +3,115 @@ import 'utils/network_util.dart';
 import 'rest_urls.dart';
 import 'login_page.dart';
 import 'dart:async';
+import 'dart:io' as io;
+
+import 'package:youtrack_timer/models/service_information.dart';
+import 'package:youtrack_timer/data/database_helper.dart';
 
 class ChooseInstancePage extends StatefulWidget {
   static String tag = 'choose-instance-page';
 
   @override
-  State<StatefulWidget> createState() => new _ChooseInstancePageState();
+  _ChooseInstancePageState createState() => new _ChooseInstancePageState();
 }
 
 class _ChooseInstancePageState extends State<ChooseInstancePage> {
+  bool isLoading = false;
+  bool networkError = false;
+
   @override
   Widget build(BuildContext context) {
-
     final TextEditingController _controller = new TextEditingController();
+    final formKey = new GlobalKey<FormState>();
+
+    void _saveServiceInformation(ServiceInformation serviceInformation) async {
+      DatabaseHelper db = new DatabaseHelper();
+      await db.saveServiceInformation(serviceInformation);
+    }
+
+    Future<ServiceInformation> _fetchServiceInformation(String serviceUrl) {
+      NetworkUtil _networkUtil = new NetworkUtil();
+
+      var response = _networkUtil.get(serviceUrl);
+      return response.then((dynamic res) {
+
+      if (res is io.IOException || res is Exception) {
+        return null;
+      }
+        
+        ServiceInformation serviceInformation = new ServiceInformation.map({
+          'serviceId': res['mobile']['serviceId'],
+          'serviceSecret': res['mobile']['serviceSecret'],
+          'ringServiceId': res['ring']['serviceId'],
+          'serviceHubUrl': res['ring']['url']
+        });
+
+        return serviceInformation;
+      });
+    }
+
+    String _validateServiceUrl(String serviceUrl) {
+      serviceUrl = serviceUrl.trim();
+      if (serviceUrl.isEmpty) {
+        return 'Please enter a YouTrack URL';
+      }
+
+      if (!serviceUrl.startsWith(new RegExp(r'(http://|https://)'))) {
+        return "The YouTrack URL should start with http(s)://";
+      }
+    }
+
+    String _checkServiceUrl(String serviceUrl) {
+      serviceUrl = serviceUrl.trim();
+      if (serviceUrl.trim().endsWith('/')) {
+        serviceUrl = serviceUrl.substring(0, serviceUrl.length-1);
+      }
+      
+      return serviceUrl;
+    }
+
+    void _handleServiceInformation() async {
+      final form = formKey.currentState;
+      
+      if (form.validate()) {
+        setState(() { isLoading = true; networkError = false; });
+        var serviceUrl = _checkServiceUrl(_controller.text);
+
+        ServiceInformation serviceInformation = await _fetchServiceInformation(serviceUrl + URL_GET_SERVICE_INFORMATION);
+        if (serviceInformation != null) {
+          _saveServiceInformation(serviceInformation);
+          Navigator.of(context).pushNamed(LoginPage.tag);
+        
+        } else {
+          setState(() {networkError = true;});
+        }
+
+        setState(() {isLoading = false;});
+      }
+    }
     
-    final text = new Center(
+    final chooseInstanceText = new Center(
       child: new Text('Enter YouTrack Url',
         style: new TextStyle(fontSize: 30.0, fontWeight: FontWeight.w700)
       ),
     );
   
-    final url = new TextFormField(
+    final serviceUrlInput = new TextFormField(
       keyboardType: TextInputType.url,
       autofocus: false,
+      validator: (val) => _validateServiceUrl(val),
       controller: _controller,
       decoration: new InputDecoration(
         hintText: 'youtrack.example.com',
         contentPadding: new EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: new OutlineInputBorder(borderRadius: new BorderRadius.circular(32.0)),
+        border: new OutlineInputBorder(borderRadius: new BorderRadius.circular(10.0)),
       ),
     );
 
-    final chooseInstanceButton = new Padding(
+    var chooseInstanceButton = new Padding(
       padding: new EdgeInsets.symmetric(vertical: 16.0),
       child: new Material(
-        borderRadius: new BorderRadius.circular(30.0),
+        borderRadius: new BorderRadius.circular(10.0),
         shadowColor: Colors.lightBlueAccent.shade100,
         elevation: 5.0,
         child: new MaterialButton(
@@ -45,32 +119,55 @@ class _ChooseInstancePageState extends State<ChooseInstancePage> {
           height: 42.0,
           color: Colors.lightBlueAccent,
           child: new Text('Next', style: new TextStyle(color: Colors.white),),
-          onPressed: () {
-            NetworkUtil _networkUtil = new NetworkUtil();
-            final serviceCredentialsUrl = _controller.text + URL_GET_SERVICE_CREDENTIALS;
-            // TODO: validate user input (currently expeted without final '/')
-            print(serviceCredentialsUrl);
-            print(_networkUtil.get(serviceCredentialsUrl));
-
-            // Navigator.of(context).pushNamed(LoginPage.tag);
-          }
+          onPressed: _handleServiceInformation,
         ),
       ),
     );
 
+    var errorOutputText = new SizedBox(
+      height: 10.0, 
+      child: new Center(
+        child: new Text(
+          networkError ? 'Network error. Please try again.':'', 
+          style: new TextStyle(color: Colors.red),
+        )
+      )
+    );
+
     return new Scaffold(
       backgroundColor: Colors.white,
-      body: new Center(
-        child: new ListView(
+      body: new Container(
+        padding: new EdgeInsets.all(15.0),
+        child: new Stack(
           children: <Widget>[
-            new SizedBox(height: 12.0,),
-            text,
-            new SizedBox(height: 120.0,),
-            url,
-            new SizedBox(height: 24.0,),
-            chooseInstanceButton
-          ]
-        ),
+            new Form(
+              key: formKey,
+              child: new ListView(
+                children: <Widget>[
+                  new SizedBox(height: 32.0,),
+                  chooseInstanceText,
+                  new SizedBox(height: 100.0,),
+                  serviceUrlInput,
+                  new SizedBox(height: 12.0,),
+                  errorOutputText,
+                  new SizedBox(height: 12.0,),
+                  chooseInstanceButton,
+                ],
+              ),
+            ),
+            isLoading ? new Stack(
+              children: [
+                new Opacity(
+                  opacity: 0.5,
+                  child: const ModalBarrier(dismissible: false, color: Colors.white70,),
+                ),
+                new Center(
+                  child: new CircularProgressIndicator(),
+                ),
+              ],
+            ) : new Text('') 
+          ],
+        ),        
       ),
     );
   }
