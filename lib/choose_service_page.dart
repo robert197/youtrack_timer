@@ -8,14 +8,14 @@ import 'dart:io' as io;
 import 'package:youtrack_timer/models/service_information.dart';
 import 'package:youtrack_timer/data/database_helper.dart';
 
-class ChooseInstancePage extends StatefulWidget {
-  static String tag = 'choose-instance-page';
+class ChooseServicePage extends StatefulWidget {
+  static String tag = 'choose-serevice-page';
 
   @override
-  _ChooseInstancePageState createState() => new _ChooseInstancePageState();
+  _ChooseServicePageState createState() => new _ChooseServicePageState();
 }
 
-class _ChooseInstancePageState extends State<ChooseInstancePage> {
+class _ChooseServicePageState extends State<ChooseServicePage> {
   bool isLoading = false;
   bool networkError = false;
 
@@ -90,7 +90,7 @@ class _ChooseInstancePageState extends State<ChooseInstancePage> {
       }
     }
     
-    final chooseInstanceText = new Center(
+    final chooseServiceText = new Center(
       child: new Text('Enter YouTrack Url',
         style: new TextStyle(fontSize: 30.0, fontWeight: FontWeight.w700)
       ),
@@ -108,7 +108,7 @@ class _ChooseInstancePageState extends State<ChooseInstancePage> {
       ),
     );
 
-    var chooseInstanceButton = new Padding(
+    var chooseServiceButton = new Padding(
       padding: new EdgeInsets.symmetric(vertical: 16.0),
       child: new Material(
         borderRadius: new BorderRadius.circular(10.0),
@@ -145,13 +145,13 @@ class _ChooseInstancePageState extends State<ChooseInstancePage> {
               child: new ListView(
                 children: <Widget>[
                   new SizedBox(height: 32.0,),
-                  chooseInstanceText,
+                  chooseServiceText,
                   new SizedBox(height: 100.0,),
                   serviceUrlInput,
                   new SizedBox(height: 12.0,),
                   errorOutputText,
                   new SizedBox(height: 12.0,),
-                  chooseInstanceButton,
+                  chooseServiceButton,
                 ],
               ),
             ),
