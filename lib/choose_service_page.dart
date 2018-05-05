@@ -16,8 +16,19 @@ class ChooseServicePage extends StatefulWidget {
 }
 
 class _ChooseServicePageState extends State<ChooseServicePage> {
+  DatabaseHelper _db = new DatabaseHelper();
   bool isLoading = false;
   bool networkError = false;
+
+  @override
+    void initState() {
+      _db.getServiceInformation().then((ServiceInformation serviceInformation) {
+        if (serviceInformation != null) {
+          Navigator.of(context).pushNamed(LoginPage.tag);
+        }
+      });
+      super.initState();
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +36,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
     final formKey = new GlobalKey<FormState>();
 
     void _saveServiceInformation(ServiceInformation serviceInformation) async {
-      DatabaseHelper db = new DatabaseHelper();
-      await db.saveServiceInformation(serviceInformation);
+      await _db.saveServiceInformation(serviceInformation);
     }
 
     Future<ServiceInformation> _fetchServiceInformation(String serviceUrl) {
@@ -89,13 +99,6 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
         setState(() {isLoading = false;});
       }
     }
-    
-    final chooseServiceText = new Center(
-      child: new Text('Enter YouTrack Url',
-        style: new TextStyle(fontSize: 30.0, fontWeight: FontWeight.w700)
-      ),
-    );
-  
     final serviceUrlInput = new TextFormField(
       keyboardType: TextInputType.url,
       autofocus: false,
@@ -145,7 +148,11 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
               child: new ListView(
                 children: <Widget>[
                   new SizedBox(height: 32.0,),
-                  chooseServiceText,
+                  new Center(
+                    child: new Text('Enter YouTrack Url',
+                      style: new TextStyle(fontSize: 30.0, fontWeight: FontWeight.w700)
+                    ),
+                  ),
                   new SizedBox(height: 100.0,),
                   serviceUrlInput,
                   new SizedBox(height: 12.0,),

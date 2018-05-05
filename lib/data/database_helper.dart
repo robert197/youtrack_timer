@@ -30,7 +30,7 @@ class DatabaseHelper {
 
   void _onCreate(Database db, int version) async{
     await db.execute('CREATE TABLE ServiceInformation('
-      + 'id INTEGER PRIMARA KEY,' 
+      + 'id INTEGER PRIMARY KEY,' 
       + 'serviceId TEXT,'
       + 'serviceSecret TEXT,'
       + 'ringServiceId TEXT,'
@@ -41,8 +41,18 @@ class DatabaseHelper {
 
   Future<int> saveServiceInformation(ServiceInformation serviceInformation) async {
     var dbClient = await db;
-    int res = await dbClient.insert("ServiceInformation", serviceInformation.toMap());
-    return res;
+    var dbEntries = await dbClient.query("ServiceInformation");
+
+    if (dbEntries.length > 0) {
+      return await dbClient.update("ServiceInformation", serviceInformation.toMap());
+    } else {
+      return await dbClient.insert("ServiceInformation", serviceInformation.toMap());
+    }
   }
 
-}  
+  Future<ServiceInformation> getServiceInformation() async {
+    var dbClient = await db;
+    var res = await dbClient.query("ServiceInformation");
+    return new ServiceInformation.map(res.last);
+  }
+}
