@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
-
 import "package:flutter/material.dart";
+
 import 'package:youtrack_timer/models/authentication.dart';
 import 'package:youtrack_timer/models/service_information.dart';
-import "choose_ticket_page.dart";
 import 'package:youtrack_timer/utils/network_util.dart';
-import 'rest_urls.dart';
+import 'package:youtrack_timer/utils/rest_urls.dart';
 import 'package:youtrack_timer/data/database_helper.dart';
 
 class ProjectListPage extends StatefulWidget {

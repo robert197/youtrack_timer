@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import "login_page.dart";
-import "project_list_page.dart";
-import "choose_ticket_page.dart";
-import "choose_service_page.dart";
+import "package:youtrack_timer/pages/login_page.dart";
+import "package:youtrack_timer/pages/project_list_page.dart";
+import "package:youtrack_timer/pages/choose_ticket_page.dart";
+import "package:youtrack_timer/pages/choose_service_page.dart";
 
 final routes = <String, WidgetBuilder> {
   ChooseServicePage.tag: (context) => new ChooseServicePage(),

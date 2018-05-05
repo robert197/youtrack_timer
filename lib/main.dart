@@ -1,6 +1,6 @@
-import "package:flutter/material.dart";
-import "choose_service_page.dart";
 import 'routes.dart';
+import "package:flutter/material.dart";
+import "package:youtrack_timer/pages/choose_service_page.dart";
 
 void main() => runApp(new MyApp());
 

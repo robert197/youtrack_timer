@@ -1,13 +1,14 @@
 import 'dart:async';
-import "package:flutter/material.dart";
-import "project_list_page.dart";
 import 'dart:convert';
 import 'dart:io' as io;
+import "package:flutter/material.dart";
+
+import "package:youtrack_timer/pages/project_list_page.dart";
 import 'package:youtrack_timer/data/database_helper.dart';
 import 'package:youtrack_timer/models/service_information.dart';
 import 'package:youtrack_timer/models/authentication.dart';
 import 'package:youtrack_timer/utils/network_util.dart';
-import 'package:youtrack_timer/rest_urls.dart';
+import 'package:youtrack_timer/utils/rest_urls.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';

@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'utils/network_util.dart';
-import 'rest_urls.dart';
-import 'login_page.dart';
 import 'dart:async';
 import 'dart:io' as io;
+import 'package:flutter/material.dart';
 
+import 'package:youtrack_timer/utils/network_util.dart';
+import 'package:youtrack_timer/utils/rest_urls.dart';
+import 'package:youtrack_timer/pages/login_page.dart';
 import 'package:youtrack_timer/models/service_information.dart';
 import 'package:youtrack_timer/data/database_helper.dart';
 
