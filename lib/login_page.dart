@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
             'username': loginData.username, 
             'password': loginData.password, 
             'grant_type':'password',
-            'scope': serviceInformation.serviceId
+            'scope': serviceInformation.ringServiceId
           }
         );
 
