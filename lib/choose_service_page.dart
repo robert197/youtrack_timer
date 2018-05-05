@@ -42,7 +42,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
     Future<ServiceInformation> _fetchServiceInformation(String serviceUrl) {
       NetworkUtil _networkUtil = new NetworkUtil();
 
-      var response = _networkUtil.get(serviceUrl);
+      var response = _networkUtil.get(serviceUrl + URL_GET_SERVICE_INFORMATION);
       return response.then((dynamic res) {
 
         if (res is io.IOException || res is Exception) {
@@ -51,6 +51,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
         
         ServiceInformation serviceInformation = new ServiceInformation.map({
           'serviceId': res['mobile']['serviceId'],
+          'serviceUrl': serviceUrl,
           'serviceSecret': res['mobile']['serviceSecret'],
           'ringServiceId': res['ring']['serviceId'],
           'serviceHubUrl': res['ring']['url']
@@ -87,7 +88,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
         setState(() { isLoading = true; networkError = false; });
         var serviceUrl = _checkServiceUrl(_controller.text);
 
-        ServiceInformation serviceInformation = await _fetchServiceInformation(serviceUrl + URL_GET_SERVICE_INFORMATION);
+        ServiceInformation serviceInformation = await _fetchServiceInformation(serviceUrl);
         if (serviceInformation != null) {
           _saveServiceInformation(serviceInformation);
           Navigator.of(context).pushNamed(LoginPage.tag);

@@ -33,6 +33,7 @@ class DatabaseHelper {
     await db.execute('CREATE TABLE ServiceInformation('
       + 'id INTEGER PRIMARY KEY,' 
       + 'serviceId TEXT,'
+      + 'serviceUrl TEXT,'
       + 'serviceSecret TEXT,'
       + 'ringServiceId TEXT,'
       + 'serviceHubUrl TEXT)'
