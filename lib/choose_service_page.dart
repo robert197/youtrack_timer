@@ -45,9 +45,9 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
       var response = _networkUtil.get(serviceUrl);
       return response.then((dynamic res) {
 
-      if (res is io.IOException || res is Exception) {
-        return null;
-      }
+        if (res is io.IOException || res is Exception) {
+          return null;
+        }
         
         ServiceInformation serviceInformation = new ServiceInformation.map({
           'serviceId': res['mobile']['serviceId'],
